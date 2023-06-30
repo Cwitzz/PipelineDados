@@ -13,7 +13,7 @@ data = pd.read_sql_query("SELECT * FROM transacoes", conn)
 # Etapa 2: Identificar Valores Nulos
 missing_data = data.isnull().sum()
 
-# Etapa 3: Preparação de Dados para o K-means(Normalização)
+# Etapa 3: Preparação de Dados para o K-means (Normalização)
 numerical_features = ['quantity', 'price']  # lista das colunas numéricas
 scaler = StandardScaler()
 scaled_data = scaler.fit_transform(data[numerical_features])
@@ -36,8 +36,10 @@ data['price'] = data['price'].astype(float)
 # Converter 'date' para o formato padrão de data YYYY-MM-DD
 data['date'] = pd.to_datetime(data['date']).dt.strftime('%Y-%m-%d')
 
-# Etapa 6: Carregar os Dados Transformados de Volta ao SQLite
+# Etapa 6: Transformar a coluna 'sexo' em valores binários
+data['sex'] = data['sex'].map({'male': 0, 'female': 1})
 
+# Etapa 7: Carregar os Dados Transformados de Volta ao SQLite
 data.to_sql('transacoes_imputadas', conn, if_exists='replace', index=False)
 
 # Fechar a conexão com o banco de dados
