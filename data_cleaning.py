@@ -13,7 +13,7 @@ data = pd.read_sql_query("SELECT * FROM transacoes", conn)
 # Etapa 2: Identificar Valores Nulos
 missing_data = data.isnull().sum()
 
-# Etapa 3: Preparação de Dados para o K-means
+# Etapa 3: Preparação de Dados para o K-means(Normalização)
 numerical_features = ['quantity', 'price']  # lista das colunas numéricas
 scaler = StandardScaler()
 scaled_data = scaler.fit_transform(data[numerical_features])
