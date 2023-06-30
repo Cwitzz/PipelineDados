@@ -4,3 +4,8 @@ def tratar_dados_ausentes(df):
     df = df.fillna(df.mean())
     return df
 
+
+def remover_duplicatas(df):
+    df_sem_duplicatas = df.drop_duplicates(subset=['Título', 'Autor'])
+    return df_sem_duplicatas
+
