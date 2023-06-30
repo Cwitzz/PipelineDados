@@ -37,7 +37,7 @@ data['price'] = data['price'].astype(float)
 data['date'] = pd.to_datetime(data['date']).dt.strftime('%Y-%m-%d')
 
 # Etapa 6: Carregar os Dados Transformados de Volta ao SQLite
-# (Você pode criar uma nova tabela ou atualizar a tabela existente)
+
 data.to_sql('transacoes_imputadas', conn, if_exists='replace', index=False)
 
 # Fechar a conexão com o banco de dados
