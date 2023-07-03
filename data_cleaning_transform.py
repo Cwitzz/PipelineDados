@@ -25,7 +25,8 @@ def apply_kmeans(scaled_data, n_clusters=3):
 
 def impute_missing_values(data, numerical_features):
     imputer = SimpleImputer(strategy='mean')
-    return imputer.fit_transform(data.groupby('cluster')[numerical_features].transform(lambda x: x.fillna(x.mean())))
+    data[numerical_features] = imputer.fit_transform(data.groupby('cluster')[numerical_features].transform(lambda x: x.fillna(x.mean())))
+    return data
 
 
 def convert_data_formats(data):
@@ -52,7 +53,7 @@ def main():
     scaled_data = scale_numerical_data(data, numerical_features)
     data['cluster'] = apply_kmeans(scaled_data)
 
-    data[numerical_features] = impute_missing_values(data, numerical_features)
+    data = impute_missing_values(data, numerical_features)
     data = convert_data_formats(data)
     data = transform_sex_column(data)
 
