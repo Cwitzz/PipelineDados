@@ -46,9 +46,13 @@ unique_products = product_encoder.classes_      # Mesma coisa do comentário up
 for customer_name in unique_customers:
     encoded_customer_name = customer_encoder.transform([customer_name])[0]
     recommendations = []
+    # Usando o modelo treinado para prever o rating de cada cliente para determinados produtos
+    # Passando o cliente codificado e o produito codificado como entry
+    # A previsão é armazenada em predicted_rating
     for product in unique_products:
         encoded_product = product_encoder.transform([product])[0]
         predicted_rating = model.predict([[encoded_customer_name, encoded_product]])[0]
+        # Adc uma tupla ctd nome do produto e rating previsto à var recommmendations
         recommendations.append((product, predicted_rating))
 
     # Ordenar as recomendações por rating previsto
