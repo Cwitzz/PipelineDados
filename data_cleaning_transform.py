@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
+import numpy as np
 
 
 def connect_to_db(db_name):
@@ -25,23 +26,35 @@ def apply_kmeans(scaled_data, n_clusters=3):
 
 def impute_missing_values(data, numerical_features):
     imputer = SimpleImputer(strategy='mean')
-    data[numerical_features] = imputer.fit_transform(data.groupby('cluster')[numerical_features].transform(lambda x: x.fillna(x.mean())))
+    data[numerical_features] = imputer.fit_transform(
+        data.groupby('cluster')[numerical_features].transform(lambda x: x.fillna(x.mean())))
     return data
 
 
 def convert_data_formats(data):
     data['quantity'] = data['quantity'].astype(int)
-    data['price'] = data['price'].astype(float)
+    data['price'] = data['price'].astype(float).round(2)  # Round price to 2 decimal places
     data['date'] = pd.to_datetime(data['date']).dt.strftime('%Y-%m-%d')
     return data
 
 
 def transform_sex_column(data):
-    data['sex'] = data['sex'].map({'male': 0, 'female': 1})
+    # Check the unique values in 'sex' column
+    print("Unique values in 'sex' column before transformation: ", data['sex'].unique())
+
+    # Map 'Masculino' to 0 and 'Feminino' to 1, leave NaN as NaN
+    data['sex'] = data['sex'].map({'Masculino': 0, 'Feminino': 1, np.nan: np.nan})
+
+    # Check the unique values in 'sex' column after transformation
+    print("Unique values in 'sex' column after transformation: ", data['sex'].unique())
+
     return data
 
 
 def load_data_to_sqlite(data, conn):
+    print("Data to be loaded to SQLite:")
+    print(data.head())
+
     data.to_sql('transacoes_imputadas', conn, if_exists='replace', index=False)
 
 
