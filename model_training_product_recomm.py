@@ -1,7 +1,8 @@
 import sqlite3
 import pandas as pd
-from surprise import Dataset, Reader, SVD
-from surprise.model_selection import train_test_split
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestRegressor
 
 # Conectar ao banco de dados SQLite
 conn = sqlite3.connect('DBFIC.db')
@@ -9,38 +10,43 @@ conn = sqlite3.connect('DBFIC.db')
 # Carregar os dados da tabela 'transacoes'
 data = pd.read_sql_query("SELECT * FROM transacoes", conn)
 
-# Criar o objeto Reader para o Surprise
-reader = Reader(rating_scale=(1, 5))
-
-# Carregar os dados na estrutura de dados do Surprise
-dataset = Dataset.load_from_df(data[['customer_name', 'product', 'price']], reader)
+# Codificação de labels para os nomes de clientes e produtos
+# Basicamente transformando nomes dos clientes e produtos em números para facilitar o aprendizado de máquina
+customer_encoder = LabelEncoder()  # Criando as variáveis para os nomes já codificados
+product_encoder = LabelEncoder()
+data['customer_name'] = customer_encoder.fit_transform(data['customer_name'])  # Atribuindo as novas variáveis aos
+data['product'] = product_encoder.fit_transform(data['product'])              # respectivos
 
 # Dividir os dados em conjunto de treinamento e teste
-trainset, testset = train_test_split(dataset, test_size=0.2, random_state=42)
+# O modelo de treinamento é cartesiano, as características são nome do cliente e produto
+# O que eu quero prever é o preço
+X = data[['customer_name', 'product']]
+y = data['price']
+# test size 0.2 significa que 20% dos dados serão usados para o teste
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Criar o modelo de filtragem colaborativa
-model = SVD()
 
-# Treinar o modelo
-model.fit(trainset)
+# Criar o modelo de regressão usando RandomForest
+model = RandomForestRegressor()
+
+# Treina o modelo
+model.fit(X_train, y_train)
 
 # Fazer previsões para o conjunto de teste
-predictions = model.test(testset)
+predictions = model.predict(X_test)
 
-# Obter a lista de todos os clientes únicos
-customer_names = data['customer_name'].unique()
-
-# Gerar as recomendações para todos os clientes
+# Gerar recomendações para todos os clientes
 recommendations_all = []
-for customer_name in customer_names:
-    # Obter os itens que o cliente ainda não comprou
-    items_to_recommend = data.loc[~data['customer_name'].eq(customer_name), 'product'].unique()
+unique_customers = customer_encoder.classes_
+unique_products = product_encoder.classes_
 
-    # Gerar as recomendações para o cliente
+for customer_name in unique_customers:
+    encoded_customer_name = customer_encoder.transform([customer_name])[0]
     recommendations = []
-    for item in items_to_recommend:
-        predicted_rating = model.predict(customer_name, item).est
-        recommendations.append((item, predicted_rating))
+    for product in unique_products:
+        encoded_product = product_encoder.transform([product])[0]
+        predicted_rating = model.predict([[encoded_customer_name, encoded_product]])[0]
+        recommendations.append((product, predicted_rating))
 
     # Ordenar as recomendações por rating previsto
     recommendations.sort(key=lambda x: x[1], reverse=True)
