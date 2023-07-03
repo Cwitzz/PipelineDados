@@ -37,9 +37,12 @@ predictions = model.predict(X_test)
 
 # Gerar recomendações para todos os clientes
 recommendations_all = []
-unique_customers = customer_encoder.classes_
-unique_products = product_encoder.classes_
+unique_customers = customer_encoder.classes_   # usando esse metodo .classes_ obtemos o codigo de cada cliente
+unique_products = product_encoder.classes_      # Mesma coisa do comentário up
 
+
+# Loop para cada nome de cliente em unique_customers , para cada um a variavel encoded_customer_name recebe
+# o valor codificado do nome do cliente usando o transform
 for customer_name in unique_customers:
     encoded_customer_name = customer_encoder.transform([customer_name])[0]
     recommendations = []
