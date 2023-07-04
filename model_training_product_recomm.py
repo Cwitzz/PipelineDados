@@ -41,7 +41,7 @@ def validate_model(model, X_test, y_test):
     return mse
 
 
-def generate_recommendations(model, customer_encoder, product_encoder, cluster, sex, top_n=5):
+def generate_recommendations(model, data, customer_encoder, product_encoder, top_n=5):
     recommendations_all = []
     unique_customers = customer_encoder.classes_
     unique_products = product_encoder.classes_
@@ -49,10 +49,19 @@ def generate_recommendations(model, customer_encoder, product_encoder, cluster, 
     for customer_name in unique_customers:
         encoded_customer_name = customer_encoder.transform([customer_name])[0]
         recommendations = []
+
+        # Recuperar os valores de cluster e sex para este cliente específico
+        customer_data = data[data['customer_name'] == customer_name].iloc[0]
+        cluster = customer_data['cluster']
+        sex = customer_data['sex']
+
         for product in unique_products:
             encoded_product = product_encoder.transform([product])[0]
+            # Desfazer a transformação dos encoders
+            original_customer_name = customer_encoder.inverse_transform([encoded_customer_name])[0]
+            original_product = product_encoder.inverse_transform([encoded_product])[0]
             # Incluindo 'cluster' e 'sex' como recursos para previsão
-            features = [encoded_customer_name, encoded_product, cluster, sex]
+            features = [original_customer_name, original_product, cluster, sex]
             predicted_rating = model.predict([features])[0]
             recommendations.append((product, predicted_rating))
 
@@ -62,7 +71,6 @@ def generate_recommendations(model, customer_encoder, product_encoder, cluster, 
     return recommendations_all
 
 
-
 def main():
     # Marca o tempo de início
     start_time = time.time()
@@ -70,7 +78,7 @@ def main():
     conn = connect_to_db('DBFIC.db')
     data = load_data(conn, "SELECT * FROM transacoes_imputadas")
 
-    data, encoders = encode_features(data, ['customer_name', 'product'])
+    data, encoders = encode_features(data, ['customer_name', 'product', 'cluster', 'sex'])
     X = data[['customer_name', 'product', 'cluster', 'sex']]
     y = data['price']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -78,7 +86,7 @@ def main():
     model = train_model(X_train, y_train, n_estimators=100)
     validate_model(model, X_test, y_test)
 
-    recommendations = generate_recommendations(model, encoders['customer_name'], encoders['product'])
+    recommendations = generate_recommendations(model, data, encoders['customer_name'], encoders['product'])
 
     for customer_name, recs in recommendations:
         logging.info(f"Recomendações para o cliente {customer_name}:")
