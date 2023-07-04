@@ -19,20 +19,23 @@ def scale_numerical_data(data, numerical_features):
     return scaler.fit_transform(data[numerical_features])
 
 
-def apply_kmeans(scaled_data, n_clusters=3):
+def impute_missing_values(data, numerical_features):
+    imputer = SimpleImputer(strategy='mean')
+    data[numerical_features] = imputer.fit_transform(data[numerical_features])
+    return data
+
+
+def apply_kmeans(data, numerical_features, n_clusters=3):
+    # Garantir que os valores NaN são imputados antes de aplicar KMeans
+    imputed_data = impute_missing_values(data, numerical_features)
+    scaled_data = scale_numerical_data(imputed_data, numerical_features)
     kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=0).fit(scaled_data)
     return kmeans.labels_
 
 
-def impute_missing_values(data, numerical_features):
-    imputer = SimpleImputer(strategy='mean')
-    data[numerical_features] = imputer.fit_transform(
-        data.groupby('cluster')[numerical_features].transform(lambda x: x.fillna(x.mean())))
-    return data
-
-
 def convert_data_formats(data):
-    data['quantity'] = data['quantity'].astype(int)
+    # Convertendo 'quantity' para float em vez de int para acomodar NaNs
+    data['quantity'] = data['quantity'].astype(float)
     data['price'] = data['price'].astype(float).round(2)  # Round price to 2 decimal places
     data['date'] = pd.to_datetime(data['date']).dt.strftime('%Y-%m-%d')
     return data
@@ -63,8 +66,7 @@ def main():
     data = extract_data(conn)
     numerical_features = ['quantity', 'price']
 
-    scaled_data = scale_numerical_data(data, numerical_features)
-    data['cluster'] = apply_kmeans(scaled_data)
+    data['cluster'] = apply_kmeans(data, numerical_features)
 
     data = impute_missing_values(data, numerical_features)
     data = convert_data_formats(data)

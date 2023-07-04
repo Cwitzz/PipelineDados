@@ -59,7 +59,6 @@ def test_apply_kmeans(sample_data):
         print(str(e))
 
 
-
 def test_impute_missing_values(sample_data):
     sample_data['cluster'] = [0, 1, 0]
     imputed_data = impute_missing_values(sample_data, ['quantity', 'price'])
