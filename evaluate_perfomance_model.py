@@ -13,14 +13,14 @@ product_encoder = joblib.load('product_encoder.pkl')
 conn = sqlite3.connect('DBFIC.db')
 
 # Carregar os dados da tabela 'transacoes'
-data = pd.read_sql_query("SELECT * FROM transacoes", conn)
+data = pd.read_sql_query("SELECT * FROM transacoes_imputadas", conn)
 
 # Codificação de labels para os nomes de clientes e produtos usando os encoders carregados
 data['customer_name'] = customer_encoder.transform(data['customer_name'])
 data['product'] = product_encoder.transform(data['product'])
 
 # Dividir os dados em conjunto de treinamento e teste
-X = data[['customer_name', 'product']]
+X = data[['customer_name', 'product', 'cluster', 'sex']]
 y = data['price']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
