@@ -4,6 +4,7 @@ import joblib
 import logging
 import time
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
@@ -16,6 +17,15 @@ def connect_to_db(db_name):
 
 def load_data(conn, query):
     return pd.read_sql_query(query, conn)
+
+
+def encode_features(data, columns):
+    encoders = {}
+    for col in columns:
+        encoder = LabelEncoder()
+        data[col] = encoder.fit_transform(data[col])
+        encoders[col] = encoder
+    return data, encoders
 
 
 def train_model(X_train, y_train, n_estimators=100):
@@ -60,6 +70,7 @@ def main():
     conn = connect_to_db('DBFIC.db')
     data = load_data(conn, "SELECT * FROM transacoes_imputadas")
 
+    data, encoders = encode_features(data, ['customer_name', 'product'])
     X = data[['customer_name', 'product', 'cluster', 'sex']]
     y = data['price']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -75,6 +86,8 @@ def main():
             logging.info(f"{i}. Produto: {item} | Rating previsto: {rating}")
 
     joblib.dump(model, 'trained_model.pkl')
+    joblib.dump(encoders['customer_name'], 'customer_encoder.pkl')
+    joblib.dump(encoders['product'], 'product_encoder.pkl')
 
     conn.close()
 
