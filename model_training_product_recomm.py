@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
+from insert_recommendations import insert_recommendations_to_table
 
 logging.basicConfig(level=logging.INFO)
 
@@ -79,7 +80,7 @@ def main():
     validate_model(model, X_test, y_test)
 
     recommendations = generate_recommendations(model, data)
-
+    insert_recommendations_to_table(recommendations)
     for customer_name, recs in recommendations:
         logging.info(f"Recomendações para o cliente {customer_name}:")
         for i, (item, rating) in enumerate(recs, start=1):
