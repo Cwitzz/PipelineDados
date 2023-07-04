@@ -12,7 +12,7 @@ data = [{
     "quantity": int(fake.random_digit_not_null()),
     "price": float(fake.random_number(digits=4)) / 100,
     "date": str(fake.date_between(start_date='-1y', end_date='today')),
-    "sex": random.choice(['male', 'female'])
+    "sex": random.choice(['Masculino', 'Feminino'])
 } for i in range(1000)]
 
 
