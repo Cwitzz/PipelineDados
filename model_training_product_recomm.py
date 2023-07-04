@@ -41,7 +41,7 @@ def validate_model(model, X_test, y_test):
     return mse
 
 
-def generate_recommendations(model, customer_encoder, product_encoder, top_n=5):
+def generate_recommendations(model, customer_encoder, product_encoder, cluster, sex, top_n=5):
     recommendations_all = []
     unique_customers = customer_encoder.classes_
     unique_products = product_encoder.classes_
@@ -51,13 +51,16 @@ def generate_recommendations(model, customer_encoder, product_encoder, top_n=5):
         recommendations = []
         for product in unique_products:
             encoded_product = product_encoder.transform([product])[0]
-            predicted_rating = model.predict([[encoded_customer_name, encoded_product]])[0]
+            # Incluindo 'cluster' e 'sex' como recursos para previsão
+            features = [encoded_customer_name, encoded_product, cluster, sex]
+            predicted_rating = model.predict([features])[0]
             recommendations.append((product, predicted_rating))
 
         recommendations.sort(key=lambda x: x[1], reverse=True)
         recommendations_all.append((customer_name, recommendations[:top_n]))
 
     return recommendations_all
+
 
 
 def main():
