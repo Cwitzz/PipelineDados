@@ -90,7 +90,7 @@ def main():
     joblib.dump(encoders['product'], 'product_encoder.pkl')
 
     conn.close()
-
+    # Me
     # Marca o tempo de finalização e calcula a duração
     end_time = time.time()
     elapsed_time = end_time - start_time
