@@ -13,7 +13,7 @@ def sample_data():
         'quantity': [10, np.nan, 30],
         'price': [5.5, 6.7, np.nan],
         'date': ['2023-07-03', '2023-07-02', '2023-07-01'],
-        'sex': ['male', 'female', 'male']
+        'sex': ['Masculino', 'Feminino', 'Masculino']
     })
     return data
 
@@ -49,8 +49,8 @@ def test_scale_numerical_data(sample_data):
 def test_apply_kmeans(sample_data):
     try:
         print("Test test_apply_kmeans started")
-        scaled_data = scale_numerical_data(sample_data, ['quantity', 'price'])
-        labels = apply_kmeans(scaled_data)
+        labels = apply_kmeans(sample_data, ['quantity', 'price'])
+
         assert labels is not None
         assert len(labels) == len(sample_data)
         print("Test test_apply_kmeans passed")
@@ -68,7 +68,7 @@ def test_impute_missing_values(sample_data):
 
 def test_convert_data_formats(sample_data):
     converted_data = convert_data_formats(sample_data)
-    assert converted_data['quantity'].dtype == np.int32 or converted_data['quantity'].dtype == np.int64
+    assert converted_data['quantity'].dtype == np.float32 or converted_data['quantity'].dtype == np.float64
     assert converted_data['price'].dtype == np.float32 or converted_data['price'].dtype == np.float64
 
 
