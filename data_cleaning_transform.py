@@ -65,10 +65,7 @@ def main():
     conn = connect_to_db('DBFIC.db')
     data = extract_data(conn)
     numerical_features = ['quantity', 'price']
-
     data['cluster'] = apply_kmeans(data, numerical_features)
-
-    data = impute_missing_values(data, numerical_features)
     data = convert_data_formats(data)
     data = transform_sex_column(data)
 
