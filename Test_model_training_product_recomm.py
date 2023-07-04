@@ -1,15 +1,7 @@
 import unittest
 from unittest.mock import patch
 import pandas as pd
-from model_training_product_recomm import (
-    connect_to_db,
-    load_data,
-    encode_features,
-    train_model,
-    validate_model,
-    generate_recommendations,
-    main
-)
+from model_training_product_recomm import *
 
 
 class TestScript(unittest.TestCase):
@@ -55,9 +47,9 @@ class TestScript(unittest.TestCase):
         mse = validate_model(model, X_test, y_test)
         self.assertIsInstance(mse, float)
 
-    @patch('script.generate_recommendations')
-    @patch('script.insert_recommendations_to_table')
-    @patch('script.joblib.dump')
+    @patch('model_training_product_recomm.generate_recommendations')
+    @patch('model_training_product_recomm.insert_recommendations_to_table')
+    @patch('model_training_product_recomm.joblib.dump')
     def test_main(self, mock_dump, mock_insert, mock_generate):
         mock_generate.return_value = [('John', [('A', 10), ('B', 20)]), ('Alice', [('C', 30)])]
         main()
