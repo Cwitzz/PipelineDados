@@ -31,7 +31,7 @@ produtos_jardim = [
 conn = sqlite3.connect('DBFIC.db')
 cursor = conn.cursor()
 
-# Inserir os dados no banco de dados
+
 for i in range(1000):
     transaction_id = i
     customer_name = fake.name()
