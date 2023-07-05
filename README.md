@@ -38,12 +38,27 @@ O projeto é projetado com foco na escalabilidade e desempenho, com possibilidad
 
 ## 🚀 Conclusão
 
-Esta pipeline é uma solução robusta para a construção de um sistema de recomendação de produtos. Ela engloba desde a criação da base de dados até a avaliação de desempenho do modelo, assegurando qualidade, testabilidade e escalabilidade.
+Esta pipeline é uma solução robusta para a construção de um sistema de recomendação de produtos. Ela engloba desde a criação da base de dados até a avaliação de desempenho do modelo, assegurando qualidade, testabilidade e escalabilidade. Não foi desenvolvida por enquanto etapas de análise dos dados pois o foco do projeto não era esse.
+
 
 ## 👨‍💻 Como executar
 
-Instruções sobre como executar os scripts e configurar o ambiente.
-
+### Pré-requisitos
+Certifique-se de ter Python 3.11 instalado em sua máquina. Além disso, você precisará de algumas bibliotecas Python. Você pode instalá-las usando pip:
+`pip install pandas scikit-learn sqlite3 joblib faker`
+### Passo 1: Configurando o Banco de Dados
+Primeiro, você precisa criar e popular o banco de dados com dados fictícios. Use o script criação_base_dados.py para isso.
+`python criação_base_dados`
+### Passo 2: Limpeza, Pré-processamento e Transformação de Dados
+Após configurar o banco de dados, execute o script data_cleaning_transform.py para limpar e transformar os dados.
+`python data_cleaning_transform.py`
+### Passo 3: Treinando o Modelo de Recomendação
+Agora que os dados estão prontos, você pode treinar o modelo de recomendação. Execute o script model_training_product_recomm.py.
+`python model_training_product_recomm.py`
+### Passo 4: Avaliando a Performance do Modelo
+Avalie a performance do modelo usando o script evaluate_perfomance_model.py. Isso fornecerá métricas úteis para entender o valor real do modelo.
+`python evaluate_perfomance_model.py
+`
 ## 📝 Licença
 
 Informações sobre a licença do projeto (se aplicável).
