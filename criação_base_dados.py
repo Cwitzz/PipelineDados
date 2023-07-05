@@ -50,5 +50,5 @@ for i in range(1000):
 # Fazer commit das alterações
 conn.commit()
 
-# Fechar a conexão com o banco de dados
+# Fechar a conexão com o banco de dados.
 conn.close()
