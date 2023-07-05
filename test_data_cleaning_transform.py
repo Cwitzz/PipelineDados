@@ -7,6 +7,8 @@ from data_cleaning_transform import (connect_to_db, extract_data, scale_numerica
                                      apply_kmeans, impute_missing_values, convert_data_formats,
                                      transform_sex_column, load_data_to_sqlite)
 
+# Testes para o DCAT
+
 @pytest.fixture
 def sample_data():
     data = pd.DataFrame({

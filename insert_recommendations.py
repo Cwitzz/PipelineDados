@@ -1,5 +1,7 @@
 import sqlite3
 
+# Modularizando a função
+
 
 def insert_recommendations_to_table(recommendations):
     conn = sqlite3.connect('DBFIC.db')
