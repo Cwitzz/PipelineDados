@@ -34,7 +34,6 @@ def apply_kmeans(data, numerical_features, n_clusters=3):
 
 
 def convert_data_formats(data):
-    # Convertendo 'quantity' para float em vez de int para acomodar NaNs
     data['quantity'] = data['quantity'].astype(float)
     data['price'] = data['price'].astype(float).round(2)  # Round price to 2 decimal places
     data['date'] = pd.to_datetime(data['date']).dt.strftime('%Y-%m-%d')
