@@ -2,7 +2,7 @@ import sqlite3
 from faker import Faker
 import random
 
-# Criar dados fictícios
+
 fake = Faker()
 produtos_jardim = [
     "Vaso de flores",
