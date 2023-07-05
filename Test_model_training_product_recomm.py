@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import patch
-import pandas as pd
 from model_training_product_recomm import *
 
 
