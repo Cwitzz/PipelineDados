@@ -73,7 +73,7 @@ Quero deixar claro que o usuário que quiser utilizar a pipeline para estudos, d
 
 Além disto, os scripts foram escritos específicamente para a table criada pelo script inicial, caso você deseje utilizar tables diferentes, com aspectos diferentes, deve fazer a adaptação de todo o resto da cadeia de scripts.
 
-## 📝 Licença
+## 📄 Licença
 
-Informações sobre a licença do projeto (se aplicável).
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
